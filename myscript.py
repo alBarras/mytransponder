@@ -1,10 +1,11 @@
+print('Firebase Script Started!')
 import RPi.GPIO as GPIO
 from time import sleep
 from firebase import firebase
 import json
 
 #json (to get data)
-aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #load the JSON file from the default location
+aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #load the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
 
 #firebase (to upload data)
 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
@@ -18,14 +19,17 @@ GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
 
 #define function
 def getAircraftsData():
+    print('\n--- New JSON Reading ---')
     count = 0
     for plane in aircraft_json["aircraft"]:
         count = count + 1
+        print('   '+count+'.- Aircraft Found')
         #identifier
         try:
             squawk = planes["squawk"]
         except:
             squawk = count
+        print('      squawk: '+squawk)
         #XY position
         try:
             lat = plane["lat"]
@@ -33,13 +37,17 @@ def getAircraftsData():
         except:
             lat = "no signal"
             long = "no signal"
+        print('      long: '+long+', lat: '+lat)
         #altitude
         try:
             altitude = plane["alt_baro"]
         except:
             altitude = "no signal"
+        print('      altitude: '+altitude)
 
-        result = fb.put(fb_dir,'test','squawk: '+squawk+', lat: '+lat+', long: '+long+', alt: '+altitude)
+        uploadStr = 'squawk: '+squawk+', lat: '+lat+', long: '+long+', alt: '+altitude
+        print('         trying to upload -> '+uploadStr)
+        result = fb.put(fb_dir,'test',uploadStr)
         break
 
 #endless loop (actual action)
