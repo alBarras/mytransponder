@@ -10,15 +10,6 @@ timeLedOn = 1
 
 jsonPath = '/run/dump1090-fa/aircraft.json'
 
-#firebase (to upload data)
-def initializeFirebase():
-    from firebase import firebase
-    fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-    fb_dirStr = 'detectedAircrafts'
-    fb_dir = '/'+fb_dirStr+'/'    #direction in database
-    fb = firebase.FirebaseApplication(fb_url)   #make actual connection
-    # result = fb.put(fb_dir,'varName','varValue')    #change a value
-
 #LED (feedback)
 GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
 GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
@@ -76,17 +67,22 @@ while True:
         getAndUploadAircraftsData()
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
-            GPIO.output(27,GPIO.HIGH)
-            # initializeFirebase()
+            try:    #check also that we can contact firebase
+                from firebase import firebase
+            except:
+                print('\n--- Waiting for Internet ---')
+            else:
+                GPIO.output(27,GPIO.HIGH)
 
-            from firebase import firebase
-            fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-            fb_dirStr = 'detectedAircrafts'
-            fb_dir = '/'+fb_dirStr+'/'    #direction in database
-            fb = firebase.FirebaseApplication(fb_url)   #make actual connection
-            # result = fb.put(fb_dir,'varName','varValue')    #change a value
+                #firebase (to upload data)
+                # from firebase import firebase
+                fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
+                fb_dirStr = 'detectedAircrafts'
+                fb_dir = '/'+fb_dirStr+'/'    #direction in database
+                fb = firebase.FirebaseApplication(fb_url)   #make actual connection
+                # result = fb.put(fb_dir,'varName','varValue')    #change a value
 
-            allInitialized = True
+                allInitialized = True
         else:
             print('\n--- Waiting for JSON file ---')
     sleep(timeLedOn)
