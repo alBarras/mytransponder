@@ -72,31 +72,16 @@ while True:
             except:
                 print('\n--- Waiting for Internet ---')
             else:
-                GPIO.output(27,GPIO.HIGH)
-
                 #firebase (to upload data)
-                # from firebase import firebase
                 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
                 fb_dirStr = 'detectedAircrafts'
                 fb_dir = '/'+fb_dirStr+'/'    #direction in database
                 fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection
                 # result = fb.put(fb_dir,'varName','varValue')    #change a value
-
                 allInitialized = True
+                GPIO.output(27,GPIO.HIGH)
         else:
             print('\n--- Waiting for JSON file ---')
     sleep(timeLedOn)
     GPIO.output(17,GPIO.LOW) #turn LED off
     sleep(timeBetweenUploads-timeLedOn) #wait for next upload
-
-
-
-# import RPi.GPIO as GPIO
-# from time import sleep
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)
-# while True:
-#    GPIO.output(17,GPIO.HIGH)
-#    sleep(1)
-#    GPIO.output(17,GPIO.LOW)
-#    sleep(1)
