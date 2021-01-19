@@ -48,7 +48,6 @@ def getAircraftsData():
         uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
         print('         trying to upload -> '+uploadStr)
         result = fb.put(fb_dir,'test',uploadStr)
-        break
 
 #endless loop (actual action)
 while True:
