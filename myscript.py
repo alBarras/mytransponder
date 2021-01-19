@@ -76,8 +76,8 @@ while True:
         getAndUploadAircraftsData()
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
-            initializeFirebase()
             GPIO.output(27,GPIO.HIGH)
+            initializeFirebase()
             allInitialized = True
         else:
             print('\n--- Waiting for JSON file ---')
