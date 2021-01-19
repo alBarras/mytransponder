@@ -1,10 +1,10 @@
 print('Firebase Script Started!')
 import RPi.GPIO as GPIO
 from time import sleep
-from firebase import firebase
-import json
-import os.path
-from os import path
+# from firebase import firebase
+# import json
+# import os.path
+# from os import path
 #
 # timeBetweenUploads = 10
 # timeLedOn = 1
