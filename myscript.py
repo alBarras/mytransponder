@@ -1,10 +1,10 @@
 print('Firebase Script Started!')
-# import RPi.GPIO as GPIO
-# from time import sleep
-# from firebase import firebase
-# import json
-# import os.path
-# from os import path
+import RPi.GPIO as GPIO
+from time import sleep
+from firebase import firebase
+import json
+import os.path
+from os import path
 #
 # timeBetweenUploads = 10
 # timeLedOn = 1
@@ -18,9 +18,9 @@ print('Firebase Script Started!')
 # fb = firebase.FirebaseApplication(fb_url)   #make actual connection
 # # result = fb.put(fb_dir,'varName','varValue')    #change a value
 #
-# #LED (feedback)
-# GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
-# GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
+#LED (feedback)
+GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
+GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
 
 # #define function
 # noSigStr = 'NoSignal'
@@ -79,10 +79,10 @@ print('Firebase Script Started!')
 
 
 
-import RPi.GPIO as GPIO
-from time import sleep
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)
+# import RPi.GPIO as GPIO
+# from time import sleep
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)
 while True:
    GPIO.output(17,GPIO.HIGH)
    sleep(1)
