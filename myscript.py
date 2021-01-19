@@ -4,6 +4,9 @@ from time import sleep
 from firebase import firebase
 import json
 
+timeBetweenUploads = 20
+timeLedOn = 1
+
 #firebase (to upload data)
 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
 fb_dirStr = 'detectedAircrafts'
@@ -17,7 +20,7 @@ GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
 
 #define function
 noSigStr = 'NoSignal'
-def getAircraftsData():
+def getAndUploadAircraftsData():
     print('\n--- New JSON Reading ---')
     fb.delete(fb_dir,'')    #if there is any data in the realtime database, it will be deleted
     aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #reload the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
@@ -52,7 +55,7 @@ def getAircraftsData():
             squawk = noSigStr
         print('      squawk: '+str(squawk))
 
-        if lat!=noSigStr and long!=noSigStr:
+        if lat!=noSigStr and long!=noSigStr:    #only if the XY position is known, upload it
             uploadStr = 'ident: '+ident+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)+', squawk: '+str(squawk)
             print('         will upload -> '+uploadStr)
             result = fb.put(fb_dir,count,uploadStr)
@@ -60,7 +63,7 @@ def getAircraftsData():
 #endless loop (actual action)
 while True:
    GPIO.output(17,GPIO.HIGH)    #turn LED on
-   getAircraftsData()
-   sleep(1)
+   getAndUploadAircraftsData()
+   sleep(timeLedOn)
    GPIO.output(17,GPIO.LOW) #turn LED off
-   sleep(20) #wait for 2 seconda
+   sleep(timeBetweenUploads-timeLedOn) #wait for next upload
