@@ -6,7 +6,7 @@ import json
 import os.path
 from os import path
 
-timeBetweenUploads = 20
+timeBetweenUploads = 10
 timeLedOn = 1
 
 jsonPath = '/run/dump1090-fa/aircraft.json'
