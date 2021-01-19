@@ -1,23 +1,24 @@
 print('Firebase Script Started!')
 import RPi.GPIO as GPIO
 from time import sleep
-# from firebase import firebase
 import json
 import os.path
 from os import path
 
-# timeBetweenUploads = 10
-# timeLedOn = 1
-#
-# jsonPath = '/run/dump1090-fa/aircraft.json'
-#
-# #firebase (to upload data)
-# fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-# fb_dirStr = 'detectedAircrafts'
-# fb_dir = '/'+fb_dirStr+'/'    #direction in database
-# fb = firebase.FirebaseApplication(fb_url)   #make actual connection
-# # result = fb.put(fb_dir,'varName','varValue')    #change a value
-#
+timeBetweenUploads = 10
+timeLedOn = 1
+
+jsonPath = '/run/dump1090-fa/aircraft.json'
+
+#firebase (to upload data)
+def initializeFirebase():
+    from firebase import firebase
+    fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
+    fb_dirStr = 'detectedAircrafts'
+    fb_dir = '/'+fb_dirStr+'/'    #direction in database
+    fb = firebase.FirebaseApplication(fb_url)   #make actual connection
+    # result = fb.put(fb_dir,'varName','varValue')    #change a value
+
 #LED (feedback)
 GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
 GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
