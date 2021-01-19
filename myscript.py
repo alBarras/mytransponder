@@ -6,6 +6,7 @@ while True:
    GPIO.output(17,GPIO.HIGH)
    sleep(1)
    GPIO.output(17,GPIO.LOW)
+   sleep(1)
 
 # print('Firebase Script Started!')
 # import RPi.GPIO as GPIO
