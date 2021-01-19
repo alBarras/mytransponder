@@ -77,7 +77,15 @@ while True:
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
             GPIO.output(27,GPIO.HIGH)
-            initializeFirebase()
+            # initializeFirebase()
+
+            from firebase import firebase
+            fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
+            fb_dirStr = 'detectedAircrafts'
+            fb_dir = '/'+fb_dirStr+'/'    #direction in database
+            fb = firebase.FirebaseApplication(fb_url)   #make actual connection
+            # result = fb.put(fb_dir,'varName','varValue')    #change a value
+
             allInitialized = True
         else:
             print('\n--- Waiting for JSON file ---')
