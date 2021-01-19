@@ -79,7 +79,7 @@ while True:
                 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
                 fb_dirStr = 'detectedAircrafts'
                 fb_dir = '/'+fb_dirStr+'/'    #direction in database
-                fb = firebase.FirebaseApplication(fb_url)   #make actual connection
+                fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection
                 # result = fb.put(fb_dir,'varName','varValue')    #change a value
 
                 allInitialized = True
