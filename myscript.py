@@ -27,10 +27,10 @@ def getAircraftsData():
         print('   '+str(count)+'.- Aircraft Found')
         #identifier
         try:
-            squawk = planes["squawk"]
+            ident = planes["flight"]
         except:
-            squawk = count
-        print('      squawk: '+str(squawk))
+            ident = '---'+count
+        print('      ident: '+str(ident))
         #XY position
         try:
             lat = plane["lat"]
@@ -47,7 +47,7 @@ def getAircraftsData():
         print('      altitude: '+str(altitude))
 
         if lat!=noSigStr and long!=noSigStr:
-            uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
+            uploadStr = 'ident: '+str(ident)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
             print('         will upload -> '+uploadStr)
             result = fb.put(fb_dir,count,uploadStr)
 
