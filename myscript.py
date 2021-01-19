@@ -4,9 +4,6 @@ from time import sleep
 from firebase import firebase
 import json
 
-#json (to get data)
-aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #load the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
-
 #firebase (to upload data)
 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
 fb_dirStr = 'detectedAircrafts'
@@ -23,6 +20,7 @@ noSigStr = 'NoSignal'
 def getAircraftsData():
     print('\n--- New JSON Reading ---')
     fb.delete(fb_dir,'')    #if there is any data in the realtime database, it will be deleted
+    aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #reload the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
     count = 0
     for plane in aircraft_json["aircraft"]:
         count = count + 1
