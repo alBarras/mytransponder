@@ -54,5 +54,6 @@ def getAircraftsData():
 while True:
    GPIO.output(17,GPIO.HIGH)    #turn LED on
    getAircraftsData()
+   sleep(1)
    GPIO.output(17,GPIO.LOW) #turn LED off
    sleep(5) #wait for 2 seconda
