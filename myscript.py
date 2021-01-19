@@ -58,6 +58,9 @@ def getAndUploadAircraftsData():
             result = fb.put(fb_dir,count,uploadStr)
     if count==0:
         print('   No Aircraft Found')
+        uploadStr = 'No Aircraft Found'
+        print('         will upload -> '+uploadStr)
+        result = fb.put(fb_dir,count,uploadStr)
 
 #endless loop (actual action)
 allInitialized = False
@@ -76,8 +79,7 @@ while True:
                 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
                 fb_dirStr = 'detectedAircrafts'
                 fb_dir = '/'+fb_dirStr+'/'    #direction in database
-                fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection
-                # result = fb.put(fb_dir,'varName','varValue')    #change a value
+                fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
                 allInitialized = True
                 GPIO.output(27,GPIO.HIGH)
         else:
