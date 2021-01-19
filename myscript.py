@@ -15,8 +15,9 @@ jsonPath = '/run/dump1090-fa/aircraft.json'
 #LED (feedback)
 if useLeds:
     GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
-    GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
-    GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
+    GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (RED LED: indicates new lecture)
+    GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (GREEN LED: indicates the system is up and running with full connection to internet)
+    GPIO.setup(22,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (HITE LED : indicates at least one aircraft has been found)
 
 #define function
 noSigStr = 'NoSignal'
@@ -59,6 +60,8 @@ def getAndUploadAircraftsData():
         if lat!=noSigStr and lon!=noSigStr:    #only if the XY position is known, upload it
             if not somethingUploaded:
                 somethingUploaded = True
+                if useLeds:
+                    GPIO.output(22,GPIO.HIGH)
             uploadStr = 'ident: '+ident+', lat: '+str(lat)+', lon: '+str(lon)+', alt: '+str(altitude)+', squawk: '+str(squawk)
             print('         will upload -> '+uploadStr)
             # result = fb.put(fb_dir,count,uploadStr)
@@ -111,6 +114,7 @@ while True:
     if useLeds:
         sleep(timeLedOn)
         GPIO.output(17,GPIO.LOW) #turn LED off
+        GPIO.output(22,GPIO.LOW)
         sleep(timeBetweenUploads-timeLedOn) #wait for next upload
     else:
         sleep(timeBetweenUploads) #wait for next upload
