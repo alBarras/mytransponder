@@ -22,6 +22,7 @@ def getAndUploadAircraftsData():
     fb.delete(fb_dir,'')    #if there is any data in the realtime database, it will be deleted
     aircraft_json = json.load(open(jsonPath))   #reload the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
     count = 0
+    somethingUploaded = False
     for plane in aircraft_json["aircraft"]:
         count = count + 1
         print('   '+str(count)+'.- Aircraft Found')
@@ -53,13 +54,16 @@ def getAndUploadAircraftsData():
         print('      squawk: '+str(squawk))
 
         if lat!=noSigStr and long!=noSigStr:    #only if the XY position is known, upload it
+            if not somethingUploaded:
+                somethingUploaded = True
             uploadStr = 'ident: '+ident+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)+', squawk: '+str(squawk)
             print('         will upload -> '+uploadStr)
             result = fb.put(fb_dir,count,uploadStr)
     if count==0:
-        print('   No Aircraft Found')
+        print('   No Aircraft Found of Any Kind')
+    if not somethingUploaded:
         uploadStr = 'No Aircraft Found'
-        print('         will upload -> '+uploadStr)
+        print('   No aircraft with XY positioning found, will upload only -> '+uploadStr)
         result = fb.put(fb_dir,count,uploadStr)
 
 #endless loop (actual action)
