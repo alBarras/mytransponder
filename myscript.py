@@ -9,17 +9,20 @@ aircraft_json = json.load(open('/run/dump1090-fa/aircraft.json'))   #load the JS
 
 #firebase (to upload data)
 fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-fb_dir = '/lol/'    #direction in database
+fb_dirStr = 'detectedAircrafts'
+fb_dir = '/'+fb_dirStr+'/'    #direction in database
 fb = firebase.FirebaseApplication(fb_url)   #make actual connection
-result = fb.put(fb_dir,'a','11')    #change a value
+# result = fb.put(fb_dir,'varName','varValue')    #change a value
 
 #LED (feedback)
 GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
 GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
 
 #define function
+noSigStr = 'NoSignal'
 def getAircraftsData():
     print('\n--- New JSON Reading ---')
+    fb.delete(fb_dir,'')    #if there is any data in the realtime database, it will be deleted
     count = 0
     for plane in aircraft_json["aircraft"]:
         count = count + 1
@@ -35,19 +38,20 @@ def getAircraftsData():
             lat = plane["lat"]
             long = plane["lon"]
         except:
-            lat = "no signal"
-            long = "no signal"
+            lat = noSigStr
+            long = noSigStr
         print('      long: '+str(long)+', lat: '+str(lat))
         #altitude
         try:
             altitude = plane["alt_baro"]
         except:
-            altitude = "no signal"
+            altitude = noSigStr
         print('      altitude: '+str(altitude))
 
-        uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
-        print('         trying to upload -> '+uploadStr)
-        result = fb.put(fb_dir,'test',uploadStr)
+        if lat!=noSigStr && long!=noSigStr:
+            uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
+            print('         will upload -> '+uploadStr)
+            result = fb.put(fb_dir,count,uploadStr)
 
 #endless loop (actual action)
 while True:
@@ -55,4 +59,4 @@ while True:
    getAircraftsData()
    sleep(1)
    GPIO.output(17,GPIO.LOW) #turn LED off
-   sleep(5) #wait for 2 seconda
+   sleep(20) #wait for 2 seconda
