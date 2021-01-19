@@ -64,6 +64,8 @@ def getAndUploadAircraftsData():
                 uploadStr = 'ident: '+ident+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)+', squawk: '+str(squawk)
                 print('         will upload -> '+uploadStr)
                 result = fb.put(fb_dir,count,uploadStr)
+        if count==0:
+            print('   No Aircraft Found')
     else:
         print('\n--- Waiting fo JSON file ---')
 
