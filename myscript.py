@@ -23,13 +23,13 @@ def getAircraftsData():
     count = 0
     for plane in aircraft_json["aircraft"]:
         count = count + 1
-        print('   '+count+'.- Aircraft Found')
+        print('   '+str(count)+'.- Aircraft Found')
         #identifier
         try:
             squawk = planes["squawk"]
         except:
             squawk = count
-        print('      squawk: '+squawk)
+        print('      squawk: '+str(squawk))
         #XY position
         try:
             lat = plane["lat"]
@@ -37,15 +37,15 @@ def getAircraftsData():
         except:
             lat = "no signal"
             long = "no signal"
-        print('      long: '+long+', lat: '+lat)
+        print('      long: '+str(long)+', lat: '+str(lat))
         #altitude
         try:
             altitude = plane["alt_baro"]
         except:
             altitude = "no signal"
-        print('      altitude: '+altitude)
+        print('      altitude: '+str(altitude))
 
-        uploadStr = 'squawk: '+squawk+', lat: '+lat+', long: '+long+', alt: '+altitude
+        uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
         print('         trying to upload -> '+uploadStr)
         result = fb.put(fb_dir,'test',uploadStr)
         break
