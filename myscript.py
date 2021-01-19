@@ -70,11 +70,11 @@ def getAndUploadAircraftsData():
                 'squawk': squawk
             })
     if count==0:
-        print('   No Aircraft Found of Any Kind')
-    if not somethingUploaded:
-        uploadStr = 'No Aircraft Found'
-        print('   No aircraft with XY positioning found, will upload only -> '+uploadStr)
-        result = fb.put(fb_dir,count,uploadStr)
+        print('   No Aircraft Found')
+    # if not somethingUploaded:
+    #     uploadStr = 'No Aircraft Found'
+    #     print('   No aircraft with XY positioning found, will upload only -> '+uploadStr)
+    #     result = fb.put(fb_dir,count,uploadStr)
 
 #endless loop (actual action)
 allInitialized = False
