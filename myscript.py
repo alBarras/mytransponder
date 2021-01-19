@@ -86,18 +86,17 @@ while True:
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
             try:    #check also that we can contact firebase
-                # from firebase import firebase
-                import firebase_admin
+                from firebase import firebase
             except:
                 print('\n--- Waiting for Internet ---')
             else:
                 #firebase (to upload data)
-                # fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-                # fb_dirStr = 'detectedAircrafts'
-                # fb_dir = '/'+fb_dirStr+'/'    #direction in database
-                # fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
+                fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
+                fb_dir = '/detectedAircrafts/'    #direction in database
+                fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
+                import firebase_admin
                 from firebase_admin import credentials
-                cred = credentials.Certificate("mytransponder-ppl-firebase-adminsdk-c1kdd-be1737206c.json")
+                cred = credentials.Certificate("/home/pi/mytransponder/mytransponder-ppl-firebase-adminsdk-c1kdd-be1737206c.json")
                 firebase_admin.initialize_app(cred, {
                     'databaseURL' : 'https://mytransponder-ppl-default-rtdb.firebaseio.com'
                 })
