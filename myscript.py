@@ -1,14 +1,4 @@
-import RPi.GPIO as GPIO
-from time import sleep
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)
-while True:
-   GPIO.output(17,GPIO.HIGH)
-   sleep(1)
-   GPIO.output(17,GPIO.LOW)
-   sleep(1)
-
-# print('Firebase Script Started!')
+print('Firebase Script Started!')
 # import RPi.GPIO as GPIO
 # from time import sleep
 # from firebase import firebase
@@ -31,7 +21,7 @@ while True:
 # #LED (feedback)
 # GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
 # GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
-#
+
 # #define function
 # noSigStr = 'NoSignal'
 # def getAndUploadAircraftsData():
@@ -79,7 +69,6 @@ while True:
 #     else:
 #         print('\n--- Waiting for JSON file ---')
 #
-#
 # #endless loop (actual action)
 # while True:
 #    GPIO.output(17,GPIO.HIGH)    #turn LED on
@@ -87,3 +76,15 @@ while True:
 #    sleep(timeLedOn)
 #    GPIO.output(17,GPIO.LOW) #turn LED off
 #    sleep(timeBetweenUploads-timeLedOn) #wait for next upload
+
+
+
+import RPi.GPIO as GPIO
+from time import sleep
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)
+while True:
+   GPIO.output(17,GPIO.HIGH)
+   sleep(1)
+   GPIO.output(17,GPIO.LOW)
+   sleep(1)
