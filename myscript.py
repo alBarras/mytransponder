@@ -67,7 +67,7 @@ def getAndUploadAircraftsData():
         if count==0:
             print('   No Aircraft Found')
     else:
-        print('\n--- Waiting fo JSON file ---')
+        print('\n--- Waiting for JSON file ---')
 
 
 #endless loop (actual action)
