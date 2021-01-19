@@ -48,7 +48,7 @@ def getAircraftsData():
             altitude = noSigStr
         print('      altitude: '+str(altitude))
 
-        if lat!=noSigStr && long!=noSigStr:
+        if lat!=noSigStr and long!=noSigStr:
             uploadStr = 'squawk: '+str(squawk)+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)
             print('         will upload -> '+uploadStr)
             result = fb.put(fb_dir,count,uploadStr)
