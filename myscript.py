@@ -5,15 +5,18 @@ import json
 import os.path
 from os import path
 
+useLeds = True  #set to False if the GPIO pins are used for other purposes like attaching an screen
+
 timeBetweenUploads = 5  #10
 timeLedOn = 1
 
 jsonPath = '/run/dump1090-fa/aircraft.json'
 
 #LED (feedback)
-GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
-GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
-GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
+if useLeds:
+    GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
+    GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
+    GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output
 
 #define function
 noSigStr = 'NoSignal'
@@ -30,7 +33,7 @@ def getAndUploadAircraftsData():
         try:
             ident = plane["flight"]
         except:
-            ident = '---'+str(count)
+            ident = '-------'
         print('      ident: '+ident)
         #XY position
         try:
@@ -69,7 +72,8 @@ def getAndUploadAircraftsData():
 #endless loop (actual action)
 allInitialized = False
 while True:
-    GPIO.output(17,GPIO.HIGH)    #turn LED on
+    if useLeds:
+        GPIO.output(17,GPIO.HIGH)    #turn LED on
     if allInitialized:
         getAndUploadAircraftsData()
     else:
@@ -85,9 +89,13 @@ while True:
                 fb_dir = '/'+fb_dirStr+'/'    #direction in database
                 fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
                 allInitialized = True
-                GPIO.output(27,GPIO.HIGH)
+                if useLeds:
+                    GPIO.output(27,GPIO.HIGH)
         else:
             print('\n--- Waiting for JSON file ---')
-    sleep(timeLedOn)
-    GPIO.output(17,GPIO.LOW) #turn LED off
-    sleep(timeBetweenUploads-timeLedOn) #wait for next upload
+    if useLeds:
+        sleep(timeLedOn)
+        GPIO.output(17,GPIO.LOW) #turn LED off
+        sleep(timeBetweenUploads-timeLedOn) #wait for next upload
+    else:
+        sleep(timeBetweenUploads) #wait for next upload
