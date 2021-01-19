@@ -38,11 +38,11 @@ def getAndUploadAircraftsData():
         #XY position
         try:
             lat = plane["lat"]
-            long = plane["lon"]
+            lon = plane["lon"]
         except:
             lat = noSigStr
-            long = noSigStr
-        print('      long: '+str(long)+', lat: '+str(lat))
+            lon = noSigStr
+        print('      lon: '+str(lon)+', lat: '+str(lat))
         #altitude
         try:
             altitude = plane["alt_baro"]
@@ -56,12 +56,19 @@ def getAndUploadAircraftsData():
             squawk = noSigStr
         print('      squawk: '+str(squawk))
 
-        if lat!=noSigStr and long!=noSigStr:    #only if the XY position is known, upload it
+        if lat!=noSigStr and lon!=noSigStr:    #only if the XY position is known, upload it
             if not somethingUploaded:
                 somethingUploaded = True
-            uploadStr = 'ident: '+ident+', lat: '+str(lat)+', long: '+str(long)+', alt: '+str(altitude)+', squawk: '+str(squawk)
+            uploadStr = 'ident: '+ident+', lat: '+str(lat)+', lon: '+str(lon)+', alt: '+str(altitude)+', squawk: '+str(squawk)
             print('         will upload -> '+uploadStr)
-            result = fb.put(fb_dir,count,uploadStr)
+            # result = fb.put(fb_dir,count,uploadStr)
+            new_aircraft = root.child('detectedAircrafts').push({
+                'ident': ident,
+                'lat': lat,
+                'lon': lon,
+                'alt': alt,
+                'squawk': squawk
+            })
     if count==0:
         print('   No Aircraft Found of Any Kind')
     if not somethingUploaded:
@@ -79,15 +86,24 @@ while True:
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
             try:    #check also that we can contact firebase
-                from firebase import firebase
+                # from firebase import firebase
+                import firebase_admin
             except:
                 print('\n--- Waiting for Internet ---')
             else:
                 #firebase (to upload data)
-                fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
-                fb_dirStr = 'detectedAircrafts'
-                fb_dir = '/'+fb_dirStr+'/'    #direction in database
-                fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
+                # fb_url = 'https://mytransponder-ppl-default-rtdb.firebaseio.com'    #firebase real time database url
+                # fb_dirStr = 'detectedAircrafts'
+                # fb_dir = '/'+fb_dirStr+'/'    #direction in database
+                # fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
+                from firebase_admin import credentials
+                cred = credentials.Certificate("mytransponder-ppl-firebase-adminsdk-c1kdd-be1737206c.json")
+                firebase_admin.initialize_app(cred, {
+                    'databaseURL' : 'https://mytransponder-ppl-default-rtdb.firebaseio.com'
+                })
+                from firebase_admin import db
+                root = db.reference()
+
                 allInitialized = True
                 if useLeds:
                     GPIO.output(27,GPIO.HIGH)
