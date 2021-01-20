@@ -38,7 +38,7 @@ def uploadEmptyAircraft():
     })
 
 #define function
-noSigStr = 'NoSignal'
+noSigStr = 'NoSig'
 def getAndUploadAircraftsData():
     print('\n--- New JSON Reading ---')
     fb.delete(fb_dir,'')    #if there is any data in the realtime database, it will be deleted
