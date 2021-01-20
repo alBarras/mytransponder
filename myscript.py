@@ -19,6 +19,35 @@ if useLeds:
     GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (GREEN LED: indicates the system is up and running with full connection to internet)
     GPIO.setup(22,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (HITE LED : indicates at least one aircraft has been found)
 
+def uploadFoundAircraft():
+    uploadStr = 'ident: '+ident+', lat: '+lat+', lon: '+lon+', alt: '+alt+', squawk: '+squawk
+    print('         will upload -> '+uploadStr)
+    # result = fb.put(fb_dir,count,uploadStr)
+    new_aircraft = root.child('detectedAircrafts').push({
+        'ident': ident,
+        'lat': lat,
+        'lon': lon,
+        'alt': alt,
+        'squawk': squawk
+    })
+
+def uploadEmptyAircraft():
+    ident = "999"
+    lat = "999"
+    lon = "999"
+    alt = "999"
+    squawk = "999"
+    uploadStr = 'ident: '+ident+', lat: '+lat+', lon: '+lon+', alt: '+alt+', squawk: '+squawk
+    print('   No aircraft with XY positioning found, will upload only -> '+uploadStr)
+    #result = fb.put(fb_dir,count,uploadStr)
+    new_aircraft = root.child('detectedAircrafts').push({
+        'ident': ident,
+        'lat': lat,
+        'lon': lon,
+        'alt': alt,
+        'squawk': squawk
+    })
+
 #define function
 noSigStr = 'NoSignal'
 def getAndUploadAircraftsData():
@@ -32,52 +61,40 @@ def getAndUploadAircraftsData():
         print('   '+str(count)+'.- Aircraft Found')
         #identifier
         try:
-            ident = plane["flight"]
+            ident = str(plane["flight"])
         except:
             ident = '-------'
         print('      ident: '+ident)
         #XY position
         try:
-            lat = plane["lat"]
-            lon = plane["lon"]
+            lat = str(plane["lat"])
+            lon = str(plane["lon"])
         except:
             lat = noSigStr
             lon = noSigStr
-        print('      lon: '+str(lon)+', lat: '+str(lat))
+        print('      lat: '+lat+', lon: '+lon)
         #altitude
         try:
-            altitude = plane["alt_baro"]
+            alt = str(plane["alt_baro"])
         except:
-            altitude = noSigStr
-        print('      altitude: '+str(altitude))
+            alt = noSigStr
+        print('      alt: '+alt)
         #squawk
         try:
-            squawk = plane["squawk"]
+            squawk = str(plane["squawk"])
         except:
             squawk = noSigStr
-        print('      squawk: '+str(squawk))
-
+        print('      squawk: '+squawk)
         if lat!=noSigStr and lon!=noSigStr:    #only if the XY position is known, upload it
             if not somethingUploaded:
                 somethingUploaded = True
                 if useLeds:
                     GPIO.output(22,GPIO.HIGH)
-            uploadStr = 'ident: '+ident+', lat: '+str(lat)+', lon: '+str(lon)+', alt: '+str(altitude)+', squawk: '+str(squawk)
-            print('         will upload -> '+uploadStr)
-            # result = fb.put(fb_dir,count,uploadStr)
-            new_aircraft = root.child('detectedAircrafts').push({
-                'ident': ident,
-                'lat': lat,
-                'lon': lon,
-                'alt': alt,
-                'squawk': squawk
-            })
+            uploadFoundAircraft()
     if count==0:
         print('   No Aircraft Found')
-    # if not somethingUploaded:
-    #     uploadStr = 'No Aircraft Found'
-    #     print('   No aircraft with XY positioning found, will upload only -> '+uploadStr)
-    #     result = fb.put(fb_dir,count,uploadStr)
+    if not somethingUploaded:
+        uploadEmptyAircraft()
 
 #endless loop (actual action)
 allInitialized = False
