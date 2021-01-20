@@ -19,17 +19,6 @@ if useLeds:
     GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (GREEN LED: indicates the system is up and running with full connection to internet)
     GPIO.setup(22,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (HITE LED : indicates at least one aircraft has been found)
 
-def uploadFoundAircraft():
-    uploadStr = 'ident: '+ident+', lat: '+lat+', lon: '+lon+', alt: '+alt+', squawk: '+squawk
-    print('         will upload -> '+uploadStr)
-    # result = fb.put(fb_dir,count,uploadStr)
-    new_aircraft = root.child('detectedAircrafts').push({
-        'ident': ident,
-        'lat': lat,
-        'lon': lon,
-        'alt': alt,
-        'squawk': squawk
-    })
 
 def uploadEmptyAircraft():
     ident = "999"
@@ -90,7 +79,16 @@ def getAndUploadAircraftsData():
                 somethingUploaded = True
                 if useLeds:
                     GPIO.output(22,GPIO.HIGH)
-            uploadFoundAircraft()
+            uploadStr = 'ident: '+ident+', lat: '+lat+', lon: '+lon+', alt: '+alt+', squawk: '+squawk
+            print('         will upload -> '+uploadStr)
+            # result = fb.put(fb_dir,count,uploadStr)
+            new_aircraft = root.child('detectedAircrafts').push({
+                'ident': ident,
+                'lat': lat,
+                'lon': lon,
+                'alt': alt,
+                'squawk': squawk
+            })
     if count==0:
         print('   No Aircraft Found')
     if not somethingUploaded:
