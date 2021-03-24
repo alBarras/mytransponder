@@ -114,7 +114,7 @@ while True:
                 fb = firebase.FirebaseApplication(fb_url, authentication = None)   #make actual connection      #result = fb.put(fb_dir,'varName','varValue')    #change a value
                 import firebase_admin
                 from firebase_admin import credentials
-                cred = credentials.Certificate("/home/pi/mytransponder/mytransponder-ppl-firebase-adminsdk-c1kdd-fae40838ec.json")
+                cred = credentials.Certificate("/home/pi/mytransponder/mytransponder-ppl-firebase-adminsdk-c1kdd-0a85ee915d.json")
                 firebase_admin.initialize_app(cred, {
                     'databaseURL' : 'https://mytransponder-ppl-default-rtdb.firebaseio.com'
                 })
