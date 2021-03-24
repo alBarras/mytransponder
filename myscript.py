@@ -15,7 +15,7 @@ jsonPath = '/run/dump1090-fa/aircraft.json'
 #LED (feedback)
 if useLeds:
     GPIO.setmode(GPIO.BCM)  #set the purpose of the GPIO pins
-    GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (RED LED: indicates new lecture)
+    GPIO.setup(17,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (RED LED: indicates new lecture, regardless if connected to internet or not)
     GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (GREEN LED: indicates the system is up and running with full connection to internet)
     GPIO.setup(22,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (HITE LED : indicates at least one aircraft has been found)
 
@@ -98,7 +98,7 @@ def getAndUploadAircraftsData():
 allInitialized = False
 while True:
     if useLeds:
-        GPIO.output(17,GPIO.HIGH)    #turn LED on
+        GPIO.output(17,GPIO.HIGH)    #turn LED on, regardless if connected to internet or not
     if allInitialized:
         getAndUploadAircraftsData()
     else:
