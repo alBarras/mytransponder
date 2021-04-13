@@ -19,7 +19,6 @@ if useLeds:
     GPIO.setup(27,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (GREEN LED: indicates the system is up and running with full connection to internet)
     GPIO.setup(22,GPIO.OUT,initial=GPIO.LOW)    #set pin as output  (HITE LED : indicates at least one aircraft has been found)
 
-
 def uploadEmptyAircraft():
     ident = "999"
     lat = "999"
@@ -45,16 +44,17 @@ def getAndUploadAircraftsData():
     aircraft_json = json.load(open(jsonPath))   #reload the JSON file from the default location (the R820T2 SDR & DVB-T USB must be connected in order the file to exist)
     count = 0
     somethingUploaded = False
+    arduinoStr = ''
     for plane in aircraft_json["aircraft"]:
         count = count + 1
         print('   '+str(count)+'.- Aircraft Found')
-        #identifier
+        #try to get identifier
         try:
             ident = str(plane["flight"])
         except:
             ident = '-------'
         print('      ident: '+ident)
-        #XY position
+        #try to get XY position
         try:
             lat = str(plane["lat"])
             lon = str(plane["lon"])
@@ -62,25 +62,27 @@ def getAndUploadAircraftsData():
             lat = noSigStr
             lon = noSigStr
         print('      lat: '+lat+', lon: '+lon)
-        #altitude
+        #try to get altitude
         try:
             alt = str(plane["alt_baro"])
         except:
             alt = noSigStr
         print('      alt: '+alt)
-        #squawk
+        #try to get squawk
         try:
             squawk = str(plane["squawk"])
         except:
             squawk = noSigStr
         print('      squawk: '+squawk)
+        #ACTUAL NEW AIRCRAFT FOUND (the info got from it is enough and reliable)
         if lat!=noSigStr and lon!=noSigStr:    #only if the XY position is known, upload it
             if not somethingUploaded:
                 somethingUploaded = True
                 if useLeds:
                     GPIO.output(22,GPIO.HIGH)
+            arduinoStr = arduinoStr + 't'+str(lat) +'g'+ str(lon) + 'i'+str(ident)+str(squawk) + '_';
             uploadStr = 'ident: '+ident+', lat: '+lat+', lon: '+lon+', alt: '+alt+', squawk: '+squawk
-            print('         will upload -> '+uploadStr)
+            print('         will upload (for Android) -> '+uploadStr)
             # result = fb.put(fb_dir,count,uploadStr)
             new_aircraft = root.child('detectedAircrafts').push({
                 'ident': ident,
@@ -93,14 +95,26 @@ def getAndUploadAircraftsData():
         print('   No Aircraft Found')
     if not somethingUploaded:
         uploadEmptyAircraft()
+        arduinoStr = 'none'
+    #for Arduino
+    #"t10.3g13.5iANE87574006_t-2.3g-3.2iLOL12347001_" = Aircraft1: latitude10.3 & longitude13.5 & ident+squawk ANE87574006, Aircraft2: latitude-2.3 & longitude-3.2 & ident+squawk LOL12347001
+    #"none" if no aircraft has been detected
+    print('         will upload (for Arduino) -> '+arduinoStr)
+    uploadArduino = fb.put("/params","allLatLong",arduinoStr)
 
 #endless loop (actual action)
 allInitialized = False
+lastLecture = True
 while True:
+    #just user feedback
     if useLeds:
         GPIO.output(17,GPIO.HIGH)    #turn LED on, regardless if connected to internet or not
+    #actual functionality
     if allInitialized:
+        lastLecture = not lastLecture
+        fb.put('/params','lastrasplecture',str(lastLecture))    #to check that the device is online from the android app
         getAndUploadAircraftsData()
+    #initializing system
     else:
         if path.exists(jsonPath):   #check first if the json file has been created (it takes up to 5min, normally less than 1min)
             try:    #check also that we can contact firebase
@@ -122,10 +136,12 @@ while True:
                 root = db.reference()
 
                 allInitialized = True
+                fb.put('/params','lastrasplecture',str(lastLecture))    #to check that the device is online from the android app
                 if useLeds:
                     GPIO.output(27,GPIO.HIGH)
         else:
             print('\n--- Waiting for JSON file ---')
+    #waiting time between lectures
     if useLeds:
         sleep(timeLedOn)
         GPIO.output(17,GPIO.LOW) #turn LED off
